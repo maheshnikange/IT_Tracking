@@ -1,0 +1,21 @@
+<h2>Installed Devices</h2>
+<table border="1">
+<tr>
+    <th>Hostname</th>
+    <th>User</th>
+    <th>OS Build</th>
+    <th>RAM</th>
+    <th>IP</th>
+    <th>Last Seen</th>
+</tr>
+{% for d in devices %}
+<tr>
+    <td>{{ d.hostname }}</td>
+    <td>{{ d.username }}</td>
+    <td>{{ d.os_build }}</td>
+    <td>{{ d.ram_gb }} GB</td>
+    <td>{{ d.ip_address }}</td>
+    <td>{{ d.last_seen }}</td>
+</tr>
+{% endfor %}
+</table>
