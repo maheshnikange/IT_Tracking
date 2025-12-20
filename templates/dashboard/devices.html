@@ -60,7 +60,8 @@
             <td>{{ d.username }}</td>
             <td>{{ d.city|default:"-" }}</td>
             <td>{{ d.country|default:"-" }}</td>
-            <td>{{ d.last_seen }}</td>
+            <td>{{ d.last_seen|default:"-" }}</td>
+
             <td>
                 <button
                     class="refresh-btn"
