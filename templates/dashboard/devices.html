@@ -36,6 +36,11 @@
 
 <h2>Registered Devices</h2>
 
+<!-- Message area -->
+{% if message %}
+<p style="color: red; font-weight: bold;">{{ message }}</p>
+{% endif %}
+
 <table>
     <thead>
         <tr>
@@ -81,14 +86,18 @@ document.querySelectorAll(".refresh-btn").forEach(btn => {
         this.innerText = "Refreshing...";
 
         fetch(`/api/devices/refresh-location/${deviceId}/`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Request failed");
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "error") {
+                    alert("Error: " + data.message);
+                    this.disabled = false;
+                    this.innerText = "Refresh Location";
+                } else {
+                    location.reload();
                 }
-                location.reload();
             })
-            .catch(() => {
-                alert("Failed to refresh location");
+            .catch(err => {
+                alert("Failed to refresh location: " + err);
                 this.disabled = false;
                 this.innerText = "Refresh Location";
             });
@@ -96,5 +105,4 @@ document.querySelectorAll(".refresh-btn").forEach(btn => {
 });
 </script>
 
-</body>
 </html>
