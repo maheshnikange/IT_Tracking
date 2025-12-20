@@ -9,8 +9,9 @@ class Device(models.Model):
     os = models.CharField(max_length=100)
     os_build = models.CharField(max_length=200)
     processor = models.CharField(max_length=200)
-    ram_gb = models.FloatField()
+    # ram_gb = models.FloatField()
 
+    ram_gb = models.FloatField(null=True, blank=True)
     public_ip = models.GenericIPAddressField(null=True)
 
     country = models.CharField(max_length=100, blank=True)
