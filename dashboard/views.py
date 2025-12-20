@@ -1,7 +1,6 @@
 from django.shortcuts import render
+from django.http import JsonResponse
 
-# Create your views here.
-from django.shortcuts import render
 from devices.models import Device
 
 # -------------------------
@@ -9,7 +8,10 @@ from devices.models import Device
 # -------------------------
 
 def device_list(request):
-    devices = Device.objects.all().order_by("-last_seen")
-    message = request.GET.get("message", "")
-    return render(request, "devices.html", {"devices": devices, "message": message})
+    try:
+        devices = Device.objects.all().order_by("-last_seen")
+        message = request.GET.get("message", "")
+        return render(request, "dashboard/devices.html", {"devices": devices, "message": message})
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
