@@ -6,4 +6,4 @@ from devices.models import Device
 
 def device_list(request):
     devices = Device.objects.all().order_by("-last_seen")
-    return render(request, "dashboard/device_list.html", {"devices": devices})
+    return render(request, "dashboard/devices.html", {"devices": devices})
