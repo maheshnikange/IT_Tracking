@@ -41,32 +41,60 @@ def device_location_view(request, device_id):
 # -------------------------
 # Heartbeat API
 # -------------------------
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from devices.models import Device
+import json
+import requests
+from datetime import datetime
+
+def get_geo_from_ip(ip):
+    try:
+        r = requests.get(f"http://ip-api.com/json/{ip}", timeout=5)
+        data = r.json()
+        if data.get("status") == "success":
+            return {
+                "latitude": data.get("lat"),
+                "longitude": data.get("lon"),
+                "city": data.get("city"),
+                "country": data.get("country")
+            }
+    except:
+        pass
+    return None
+
 @csrf_exempt
 def device_heartbeat(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST only"}, status=405)
+
     try:
-        if request.method != "POST":
-            return JsonResponse({"error": "POST only"}, status=405)
-
-        import json
         data = json.loads(request.body)
-
         device_id = data.get("device_id")
         if not device_id:
             return JsonResponse({"status": "error", "message": "device_id missing"}, status=400)
 
         device, _ = Device.objects.get_or_create(device_id=device_id)
 
+        # Update device info
         for field in ["hostname", "username", "os", "os_build", "processor", "ram_gb", "public_ip"]:
-            setattr(device, field, data.get(field, ""))
+            setattr(device, field, data.get(field, getattr(device, field, "")))
 
+        # Get location from public IP
+        if device.public_ip:
+            geo = get_geo_from_ip(device.public_ip)
+            if geo:
+                device.latitude = geo["latitude"]
+                device.longitude = geo["longitude"]
+                device.city = geo["city"]
+                device.country = geo["country"]
+
+        device.last_seen = datetime.utcnow()
         device.save()
-        return JsonResponse({"status": "ok"})
 
+        return JsonResponse({"status": "ok"})
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=500)
-
-
-# -------------------------
 # Refresh location API
 # -------------------------
 def refresh_location(request, pk):
