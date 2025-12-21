@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Device Location</title>
+    <style>
+        #map { height: 500px; width: 100%; }
+    </style>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+    <h1>Location of {{ device.hostname }}</h1>
+    <div id="map"></div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var latitude = {{ device.latitude|default:"0" }};
+        var longitude = {{ device.longitude|default:"0" }};
+
+        var map = L.map('map').setView([latitude, longitude], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        var marker = L.marker([latitude, longitude]).addTo(map)
+            .bindPopup('{{ device.hostname }}')
+            .openPopup();
+    </script>
+</body>
+</html>

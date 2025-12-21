@@ -61,14 +61,13 @@
             <td>{{ d.city|default:"-" }}</td>
             <td>{{ d.country|default:"-" }}</td>
             <td>{{ d.last_seen|default:"-" }}</td>
-
             <td>
-                <button
-                    class="refresh-btn"
-                    data-device-id="{{ d.id }}">
-                    Refresh Location
-                </button>
+                <a href="{% url 'device-location' device.device_id %}">
+                    <button>Refresh Location</button>
+                </a>
             </td>
+
+
         </tr>
     {% empty %}
         <tr>

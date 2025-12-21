@@ -25,6 +25,19 @@ def register_device(request):
         return Response({"status": "error", "message": str(e)}, status=500)
 
 
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import Device
+
+def device_location_view(request, device_id):
+    device = get_object_or_404(Device, device_id=device_id)
+    context = {
+        "device": device
+    }
+    return render(request, "dashboard/device_location.html", context)
+
+
 # -------------------------
 # Heartbeat API
 # -------------------------
