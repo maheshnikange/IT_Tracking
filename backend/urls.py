@@ -10,3 +10,9 @@ urlpatterns = [
 
 
 ]
+# ssh root@64.227.156.233
+# http://64.227.156.233:8000/api/devices/heartbeat/
+
+# curl -X POST http://64.227.156.233:8000/api/devices/heartbeat/ \
+# -H "Content-Type: application/json" \
+# -d '{"device_id": "TEST123", "hostname": "TEST-PC", "username": "user", "os": "Windows 10", "os_build": "22631", "processor": "Intel i5", "ram_gb": 8, "public_ip": "49.43.24.115"}'

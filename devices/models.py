@@ -19,3 +19,6 @@ class Device(models.Model):
     isp = models.CharField(max_length=200, blank=True)
 
     last_seen = models.DateTimeField(auto_now=True)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+
