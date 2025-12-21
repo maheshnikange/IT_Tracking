@@ -20,13 +20,25 @@
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
+<script type="application/json" id="lat-data">
+    {{ device.latitude|default:0 }}
+</script>
+
+<script type="application/json" id="lng-data">
+    {{ device.longitude|default:0 }}
+</script>
+
 <script>
-    var latitude = JSON.parse(
+    const latitude = JSON.parse(
         document.getElementById("lat-data").textContent
     );
-    var longitude = JSON.parse(
+    const longitude = JSON.parse(
         document.getElementById("lng-data").textContent
     );
+
+    if (!latitude || !longitude) {
+        alert("Location not available yet");
+    }
 
     var map = L.map('map').setView([latitude, longitude], 13);
 
@@ -39,6 +51,5 @@
         .bindPopup("{{ device.hostname }}")
         .openPopup();
 </script>
-
 </body>
 </html>
