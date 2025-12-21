@@ -62,7 +62,8 @@
             <td>{{ d.country|default:"-" }}</td>
             <td>{{ d.last_seen|default:"-" }}</td>
             <td>
-                <a href="{% url 'device-location' device.device_id %}">
+                <a href="{% url 'device-location' d.device_id %}">
+
                     <button>Refresh Location</button>
                 </a>
             </td>
