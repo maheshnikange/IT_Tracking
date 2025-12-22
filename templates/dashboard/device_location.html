@@ -14,42 +14,54 @@
 </head>
 <body>
 
-    <h1>Location of {{ device.hostname }}</h1>
+<h1>Location of {{ device.hostname }}</h1>
+
+{% if device.latitude and device.longitude %}
+    <!-- Store data in hidden spans for safe JS parsing -->
+    <span id="lat-data" style="display:none;">{{ device.latitude|json_script:"lat-data" }}</span>
+    <span id="lng-data" style="display:none;">{{ device.longitude|json_script:"lng-data" }}</span>
+    {% if device.accuracy_meters %}
+        <span id="accuracy-data" style="display:none;">{{ device.accuracy_meters|json_script:"accuracy-data" }}</span>
+    {% endif %}
+
     <div id="map"></div>
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Parse latitude and longitude safely
+        const latitude = JSON.parse(document.getElementById("lat-data").textContent);
+        const longitude = JSON.parse(document.getElementById("lng-data").textContent);
+        const accuracyElem = document.getElementById("accuracy-data");
+        const accuracy = accuracyElem ? JSON.parse(accuracyElem.textContent) : null;
 
-<script type="application/json" id="lat-data">
-    {{ device.latitude|default:0 }}
-</script>
+        // Initialize map
+        const map = L.map('map').setView([latitude, longitude], 15);
 
-<script type="application/json" id="lng-data">
-    {{ device.longitude|default:0 }}
-</script>
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19
+        }).addTo(map);
 
-<script>
-    const latitude = JSON.parse(
-        document.getElementById("lat-data").textContent
-    );
-    const longitude = JSON.parse(
-        document.getElementById("lng-data").textContent
-    );
+        // Add marker
+        L.marker([latitude, longitude])
+            .addTo(map)
+            .bindPopup("{{ device.hostname }}")
+            .openPopup();
 
-    if (!latitude || !longitude) {
-        alert("Location not available yet");
-    }
+        // Optional: add accuracy circle
+        if (accuracy) {
+            L.circle([latitude, longitude], {
+                radius: accuracy,
+                color: 'blue',
+                fillOpacity: 0.1
+            }).addTo(map);
+        }
+    </script>
 
-    var map = L.map('map').setView([latitude, longitude], 13);
+{% else %}
+    <p style="color:red;">Location not available yet</p>
+{% endif %}
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19
-    }).addTo(map);
-
-    L.marker([latitude, longitude])
-        .addTo(map)
-        .bindPopup("{{ device.hostname }}")
-        .openPopup();
-</script>
 </body>
 </html>
