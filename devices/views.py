@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import requests
-from .models import Device
+from .models import Device,DeviceScreenshot
 
 # -------------------------
 # API to register device
@@ -122,3 +122,62 @@ def refresh_location(request, pk):
         return JsonResponse({"status": "error", "message": str(e)}, status=500)
 
 
+
+
+
+
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import Device, DeviceScreenshot
+
+def device_list(request):
+    devices = Device.objects.all().order_by("-last_seen")
+    return render(request, "devices/device_list.html", {
+        "devices": devices
+    })
+
+def device_screenshot_list(request, device_id):
+    device = get_object_or_404(Device, device_id=device_id)
+    screenshots = DeviceScreenshot.objects.filter(device=device)
+
+    return render(request, "devices/device_screenshots.html", {
+        "device": device,
+        "screenshots": screenshots
+    })
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
+from .models import Device, DeviceScreenshot
+
+@csrf_exempt
+def upload_screenshot(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST only"}, status=405)
+
+    device_id = request.POST.get("device_id")
+    screenshot = request.FILES.get("screenshot")
+
+    if not device_id or not screenshot:
+        return JsonResponse(
+            {"status": "error", "message": "device_id and screenshot required"},
+            status=400
+        )
+
+    try:
+        device = Device.objects.get(device_id=device_id)
+    except Device.DoesNotExist:
+        return JsonResponse(
+            {"status": "error", "message": "Device not found"},
+            status=404
+        )
+
+    DeviceScreenshot.objects.create(
+        device=device,
+        image=screenshot,
+        captured_at=timezone.now()
+    )
+
+    return JsonResponse({"status": "ok"})

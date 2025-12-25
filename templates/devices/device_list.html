@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Device Dashboard</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 95%;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        th {
+            background: #f4f4f4;
+        }
+        a button {
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Registered Devices</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Hostname</th>
+            <th>Username</th>
+            <th>City</th>
+            <th>Country</th>
+            <th>Last Seen</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for d in devices %}
+        <tr>
+            <td>{{ d.hostname }}</td>
+            <td>{{ d.username }}</td>
+            <td>{{ d.city|default:"-" }}</td>
+            <td>{{ d.country|default:"-" }}</td>
+            <td>{{ d.last_seen|date:"d M Y H:i" }}</td>
+            <td>
+                <a href="{% url 'device-screenshots' d.device_id %}">
+                    <button>View Screenshots</button>
+                </a>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="6">No devices found</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

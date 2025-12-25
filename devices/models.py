@@ -22,3 +22,12 @@ class Device(models.Model):
     latitude = models.FloatField(null=True, blank=True)
     longitude = models.FloatField(null=True, blank=True)
 
+
+class DeviceScreenshot(models.Model):
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="screenshots/%Y/%m/%d/")
+    captured_at = models.DateTimeField()
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-captured_at"]

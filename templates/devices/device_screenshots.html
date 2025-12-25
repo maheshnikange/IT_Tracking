@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Screenshots - {{ device.hostname }}</title>
+    <style>
+        body {
+            font-family: Arial;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 15px;
+        }
+        .card {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
+        .card img {
+            width: 100%;
+            cursor: pointer;
+        }
+        .time {
+            font-size: 12px;
+            color: #555;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Screenshots – {{ device.hostname }}</h2>
+<p>User: {{ device.username }}</p>
+
+<a href="{% url 'device-list' %}">⬅ Back to Devices</a>
+
+<hr>
+
+{% if screenshots %}
+<div class="grid">
+    {% for s in screenshots %}
+        <div class="card">
+            <a href="{{ s.image.url }}" target="_blank">
+                <img src="{{ s.image.url }}" alt="Screenshot">
+            </a>
+            <div class="time">
+                {{ s.captured_at|date:"d M Y H:i" }}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>No screenshots available.</p>
+{% endif %}
+
+</body>
+</html>

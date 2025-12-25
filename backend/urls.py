@@ -1,6 +1,8 @@
 
 from django.contrib import admin
 from django.urls import path,include
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -9,7 +11,10 @@ urlpatterns = [
     path("", include("dashboard.urls")),
 
 
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+
 # ssh root@64.227.156.233
 # http://64.227.156.233:8000/api/devices/heartbeat/
 
