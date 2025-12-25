@@ -17,7 +17,7 @@ from devices.models import Device
 
 
 from django.shortcuts import render, get_object_or_404
-from .models import Device, DeviceScreenshot
+# from .models import Device, DeviceScreenshot
 
 def device_list(request):
     devices = Device.objects.all().order_by("-last_seen")
