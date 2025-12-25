@@ -16,6 +16,6 @@ urlpatterns = [
     path("devices/<str:device_id>/screenshots/",device_screenshot_list,name="device-screenshots"),
 
  # API
-    path("api/devices/upload-screenshot/",upload_screenshot,name="upload-screenshot"),
+    path("upload-screenshot/",upload_screenshot,name="upload-screenshot"),
 
 ]
